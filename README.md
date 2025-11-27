@@ -46,9 +46,9 @@ This project follows a layered architecture inspired by DDD (Domain-Driven Desig
 │         API Layer (Views)           │
 │     - Receives HTTP requests        │
 │     - Validates data (Serializers)  │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────┴──────────────────────┐
+└─────────────────┬───────────────────┘
+                  │
+┌─────────────────┴───────────────────┐
 │      Business Logic Layer           │
 ├─────────────────┬───────────────────┤
 │   Services      │    Selectors      │
@@ -57,8 +57,8 @@ This project follows a layered architecture inspired by DDD (Domain-Driven Desig
 │ - update_task   │ - get_task        │
 │ - delete_task   │                   │
 └─────────────────┴───────────────────┘
-               │
-┌──────────────┴──────────────────────┐
+                  │
+┌─────────────────┴───────────────────┐
 │         Data Layer (Models)         │
 │     - Defines data structure        │
 │     - Interacts with database       │
@@ -80,40 +80,40 @@ This project follows a layered architecture inspired by DDD (Domain-Driven Desig
 
 ```
 django-api/
-├── config/                      # Django project configurations
+├── config/                         # Django project configurations
 │   ├── settings/
-│   │   ├── base.py             # Shared base configurations
-│   │   ├── dev.py              # Development configurations
-│   │   └── prod.py             # Production configurations
-│   ├── urls.py                 # Main project URLs
-│   ├── wsgi.py                 # WSGI configuration
-│   └── asgi.py                 # ASGI configuration
+│   │   ├── base.py                 # Shared base configurations
+│   │   ├── dev.py                  # Development configurations
+│   │   └── prod.py                 # Production configurations
+│   ├── urls.py                     # Main project URLs
+│   ├── wsgi.py                     # WSGI configuration
+│   └── asgi.py                     # ASGI configuration
 │
-├── core/                        # Central app with shared code
-│   ├── models.py               # TimeStampedModel (abstract base model)
-│   └── pagination.py           # Custom pagination class
+├── core/                           # Central app with shared code
+│   ├── models.py                   # TimeStampedModel (abstract base model)
+│   └── pagination.py               # Custom pagination class
 │
-├── users/                       # Users app
-│   ├── models.py               # Custom User model
+├── users/                          # Users app
+│   ├── models.py                   # Custom User model
 │   └── api/
-│       ├── views.py            # UserViewSet (ReadOnly for admins)
-│       ├── serializers.py      # UserSerializer
-│       └── urls.py             # User routes
+│       ├── views.py                # UserViewSet (ReadOnly for admins)
+│       ├── serializers.py          # UserSerializer
+│       └── urls.py                 # User routes
 │
-├── tasks/                       # Tasks app
-│   ├── models.py               # Task model
-│   ├── selectors.py            # Query functions (read)
-│   ├── services.py             # Business functions (write)
+├── tasks/                          # Tasks app
+│   ├── models.py                   # Task model
+│   ├── selectors.py                # Query functions (read)
+│   ├── services.py                 # Business functions (write)
 │   ├── api/
-│   │   ├── views.py            # TaskViewSet
-│   │   ├── serializers.py      # TaskSerializer
-│   │   └── urls.py             # Task routes
+│   │   ├── views.py                # TaskViewSet
+│   │   ├── serializers.py          # TaskSerializer
+│   │   └── urls.py                 # Task routes
 │   └── tests/
-│       └── test_tasks_api.py   # Task API tests
+│       └── test_tasks_api.py       # Task API tests
 │
-├── manage.py                    # Django CLI
-├── db.sqlite3                   # SQLite database
-└── README.md                    # This file
+├── manage.py                       # Django CLI
+├── db.sqlite3                      # SQLite database
+└── README.md                       # This file
 ```
 
 ## 🚀 Installation and Setup
