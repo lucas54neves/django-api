@@ -126,34 +126,51 @@ The easiest way to get started is using the Dev Container, which provides a pre-
 - Docker Desktop installed and running
 - VS Code or Cursor with the "Dev Containers" extension
 
-**Steps:**
+**Quick Start:**
 1. Open the project in VS Code/Cursor
 2. Press `F1` or `Ctrl+Shift+P` (Windows/Linux) / `Cmd+Shift+P` (Mac)
 3. Type: `Dev Containers: Reopen in Container`
-4. Wait for the container to build and initialize
+4. Wait for the container to build (first time: ~5-10 minutes)
 
-The container will automatically:
-- Install all Python dependencies
-- Run database migrations
-- Set up Git hooks for code quality
-- **Mount your SSH keys from host** (for Git operations)
-- **Configure SSH agent forwarding**
+**What Gets Configured Automatically:**
 
-Access the API at: `http://localhost:8000/`
+The container automatically sets up:
+- ✅ Python 3.12 with all dependencies
+- ✅ Database migrations applied
+- ✅ Default superuser created (`admin` / `admin`)
+- ✅ Git hooks for code quality checks
+- ✅ SSH keys mounted from host (read-only)
+- ✅ VS Code extensions (Python, Black, isort, Ruff)
+
+**Access Points:**
+- **API**: http://localhost:8000/api/v1/
+- **Admin Panel**: http://localhost:8000/admin (login: `admin` / `admin`)
+- **Dev Server**: Start with `make run` or `python manage.py runserver 0.0.0.0:8000`
 
 **🔑 SSH Configuration:**
 
-The dev container automatically mounts your SSH configuration from the host machine, allowing you to:
+The dev container automatically mounts your SSH configuration from the host machine, enabling:
 - Push/pull from private Git repositories
-- Use SSH authentication for GitHub, GitLab, Bitbucket, etc.
-- Keep your existing SSH keys secure on the host (read-only mount)
+- SSH authentication for GitHub, GitLab, Bitbucket, etc.
+- Secure key storage on host (read-only mount)
 
 Test SSH inside the container:
 ```bash
 ssh -T git@github.com
 ```
 
-For more details and troubleshooting, see [.devcontainer/README.md](.devcontainer/README.md)
+**🔧 Common Troubleshooting:**
+
+| Issue | Solution |
+|-------|----------|
+| Container won't start | Rebuild with `F1` → "Dev Containers: Rebuild Container" |
+| Port 8000 in use | Stop other processes or change port in `docker-compose.yml` |
+| Dependencies not found | Run `pip install -r requirements.txt requirements-dev.txt` |
+| SSH keys not working | Verify `~/.ssh` exists on host, check [.devcontainer/SSH_SETUP.md](.devcontainer/SSH_SETUP.md) |
+
+**📚 Detailed Documentation:**
+- Full setup guide: [.devcontainer/README.md](.devcontainer/README.md)
+- SSH configuration: [.devcontainer/SSH_SETUP.md](.devcontainer/SSH_SETUP.md)
 
 ---
 
@@ -481,30 +498,35 @@ The project includes automated tests for the task API.
 
 The project includes a Makefile with convenient commands for development:
 
+| Command | Description |
+|---------|-------------|
+| `make help` | Show all available commands |
+| `make install` | Install production dependencies |
+| `make install-dev` | Install development dependencies (linters, test tools) |
+| `make test` | Run all tests |
+| `make test-coverage` | Run tests with coverage report |
+| `make lint` | Run all linting checks (Black, isort, Flake8, Pylint) |
+| `make format` | Auto-format code (Black + isort) |
+| `make check` | Run lint + tests (same as CI pipeline) |
+| `make clean` | Remove temporary files and caches |
+| `make run` | Start development server |
+| `make migrate` | Run database migrations |
+| `make makemigrations` | Create new migrations |
+| `make shell` | Open Django shell |
+
+**Recommended Development Workflow:**
+
 ```bash
-# Install development dependencies
-make install-dev
-
-# Run all tests
-make test
-
-# Run tests with coverage report
-make test-coverage
-
-# Run all linting checks
-make lint
-
-# Auto-format code (black + isort)
+# 1. Format code automatically
 make format
 
-# Run lint and tests (same as CI)
+# 2. Run all checks (same as CI)
 make check
 
-# Clean temporary files
-make clean
-
-# Show all available commands
-make help
+# 3. If everything passes, commit
+git add .
+git commit -m "feat: new feature"
+git push
 ```
 
 ### Run Tests Manually
@@ -538,22 +560,40 @@ The project uses multiple tools to ensure code quality:
 **Black** (code formatting):
 ```bash
 black .
+# Configuration in pyproject.toml: line-length = 127
 ```
 
 **isort** (import organization):
 ```bash
 isort .
+# Configuration in pyproject.toml: profile = "black"
 ```
 
 **Flake8** (style guide enforcement):
 ```bash
 flake8 .
+# Configuration in .flake8: max-line-length = 127, max-complexity = 10
 ```
 
 **Pylint** (code analysis):
 ```bash
 pylint --disable=all --enable=E,F --ignore=migrations,venv **/*.py
+# Configuration in pyproject.toml: Focuses on errors (E) and fatal issues (F)
 ```
+
+**Configuration Files:**
+
+- `.flake8` - Flake8 settings (line length, exclusions, complexity)
+- `pyproject.toml` - Black, isort, Pylint, and Coverage settings
+
+**Best Practices:**
+
+✅ Run `make format` before committing  
+✅ Run `make check` to validate (same as CI)  
+✅ Keep test coverage above 80%  
+✅ Write tests for new features  
+✅ Use Git hooks for automatic validation  
+✅ Review CI logs when builds fail
 
 ### Test Structure
 
@@ -583,45 +623,115 @@ The workflow (`.github/workflows/ci.yml`) automatically:
 ### Workflow Triggers
 
 The CI runs automatically on:
-- Push to `main` branch
-- Pull requests targeting `main` branch
+- ✅ Push to `main` branch
+- ✅ Pull requests targeting `main` branch
+
+### Tools and Configuration
+
+The project uses multiple tools to ensure code quality:
+
+| Tool | Purpose | Configuration File |
+|------|---------|-------------------|
+| **Black** | Code formatting (PEP 8) | `pyproject.toml` |
+| **isort** | Import organization | `pyproject.toml` |
+| **Flake8** | Style guide enforcement | `.flake8` |
+| **Pylint** | Static code analysis | `pyproject.toml` |
+| **pytest** | Testing framework | `pyproject.toml` |
+| **Coverage** | Code coverage tracking | `pyproject.toml` |
+
+### Running CI Checks Locally
+
+Before pushing code, run the same checks locally to avoid CI failures:
+
+```bash
+# Run everything (lint + tests) - same as CI
+make check
+
+# Or run individually
+make format        # Auto-fix formatting (Black + isort)
+make lint          # All linting checks
+make test          # All tests
+make test-coverage # Tests with coverage report
+```
+
+### Git Hooks (Optional but Recommended)
+
+Configure Git hooks to run checks automatically before each commit:
+
+```bash
+# Make the script executable
+chmod +x setup_hooks.sh
+
+# Run the setup script
+./setup_hooks.sh
+```
+
+This configures pre-commit hooks that prevent committing code with formatting or linting issues.
 
 ### Viewing CI Results
 
 1. Go to your GitHub repository
-2. Click on "Actions" tab
-3. Select a workflow run to see detailed results
-4. Download coverage reports from artifacts (available for 30 days)
+2. Click on **"Actions"** tab
+3. Select **"CI - Lint and Tests"** workflow
+4. Click on a specific run to see detailed logs
+5. Download coverage reports from artifacts (available for 30 days)
 
-### Running CI Checks Locally
+**Add a CI Status Badge to README:**
 
-Before pushing code, you can run the same checks locally:
-
-```bash
-# Run everything (lint + tests)
-make check
-
-# Or run individually
-make lint      # All linting checks
-make test      # All tests
-make format    # Auto-fix formatting issues
+```markdown
+![CI Status](https://github.com/YOUR-USERNAME/YOUR-REPO/workflows/CI%20-%20Lint%20and%20Tests/badge.svg)
 ```
+
+### Branch Protection (Recommended)
+
+Configure branch protection to prevent merging code with issues:
+
+1. Go to **Settings** → **Branches** on GitHub
+2. Click **Add rule**
+3. Branch name pattern: `main`
+4. Enable:
+   - ✅ **Require status checks to pass before merging**
+   - ✅ **Require branches to be up to date before merging**
+5. Select the check: **lint-and-test**
+6. Save changes
+
+This ensures PRs with failing tests or linting issues cannot be merged.
+
+### CI/CD Troubleshooting
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| ❌ "Black would reformat" | Code not formatted | Run `make format` |
+| ❌ "isort would reformat" | Imports disorganized | Run `make format` |
+| ❌ "Flake8 found errors" | Style violations | Run `flake8 .` and fix issues |
+| ❌ "Tests failed" | Test failures | Run `make test` locally and fix |
+| ❌ Workflow doesn't run | Actions disabled | Check Settings → Actions |
 
 ### Development Dependencies
 
-To install all linting and testing tools locally:
+Install all linting and testing tools:
 
 ```bash
+# Install dev dependencies
+make install-dev
+
+# Or manually
 pip install -r requirements-dev.txt
 ```
 
-This includes:
-- **black** - Code formatter
-- **isort** - Import sorter
-- **flake8** - Style guide enforcer
-- **pylint** - Code analyzer
-- **pytest** & **pytest-django** - Testing framework
-- **coverage** - Code coverage tool
+**Included tools:**
+- **black** (code formatter)
+- **isort** (import sorter)
+- **flake8** (style guide enforcer)
+- **pylint** (code analyzer)
+- **pytest** & **pytest-django** (testing)
+- **coverage** (coverage tracking)
+
+### Detailed Workflow Documentation
+
+For advanced workflow configuration and customization, see:
+- [.github/workflows/README.md](.github/workflows/README.md) - Detailed workflow documentation
+- [.github/workflows/ci.yml](.github/workflows/ci.yml) - Workflow configuration file
 
 ## 🚀 Deployment
 
