@@ -1,50 +1,50 @@
-# Django REST API - Sistema de Gerenciamento de Tarefas
+# Django REST API - Task Management System
 
-Uma API RESTful robusta construída com Django e Django REST Framework, seguindo boas práticas de arquitetura em camadas com separação entre selectors (leitura) e services (escrita).
+A robust RESTful API built with Django and Django REST Framework, following best practices of layered architecture with separation between selectors (read) and services (write).
 
-## 📋 Índice
+## 📋 Table of Contents
 
-- [Características](#características)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Arquitetura do Projeto](#arquitetura-do-projeto)
-- [Estrutura de Diretórios](#estrutura-de-diretórios)
-- [Instalação e Configuração](#instalação-e-configuração)
-- [Como o Projeto Funciona](#como-o-projeto-funciona)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Project Architecture](#project-architecture)
+- [Directory Structure](#directory-structure)
+- [Installation and Setup](#installation-and-setup)
+- [How the Project Works](#how-the-project-works)
 - [API Endpoints](#api-endpoints)
-- [Testes](#testes)
-- [Deploy](#deploy)
+- [Testing](#testing)
+- [Deployment](#deployment)
 
-## ✨ Características
+## ✨ Features
 
-- **API RESTful** completa com Django REST Framework
-- **Autenticação** via Session e Token Authentication
-- **Usuário customizado** extendendo AbstractUser
-- **Paginação** configurável nas listagens
-- **Arquitetura em camadas** (Views → Services/Selectors → Models)
-- **Múltiplos ambientes** (dev, prod) com configurações separadas
-- **Timestamps automáticos** em todos os models via TimeStampedModel
-- **Testes automatizados** para garantir qualidade do código
-- **Admin Django** para gerenciamento interno
+- **Complete RESTful API** with Django REST Framework
+- **Authentication** via Session and Token Authentication
+- **Custom User Model** extending AbstractUser
+- **Configurable pagination** for listings
+- **Layered architecture** (Views → Services/Selectors → Models)
+- **Multiple environments** (dev, prod) with separate configurations
+- **Automatic timestamps** on all models via TimeStampedModel
+- **Automated tests** to ensure code quality
+- **Django Admin** for internal management
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Technologies Used
 
 - **Python 3.x**
 - **Django 5.2**
-- **Django REST Framework** - Para criação da API REST
-- **SQLite** - Banco de dados em desenvolvimento
-- **Django Debug Toolbar** - Ferramentas de debug em desenvolvimento
+- **Django REST Framework** - For creating the REST API
+- **SQLite** - Database in development
+- **Django Debug Toolbar** - Debug tools in development
 
-## 🏗️ Arquitetura do Projeto
+## 🏗️ Project Architecture
 
-Este projeto segue uma arquitetura em camadas inspirada em DDD (Domain-Driven Design):
+This project follows a layered architecture inspired by DDD (Domain-Driven Design):
 
-### Camadas da Aplicação
+### Application Layers
 
 ```
 ┌─────────────────────────────────────┐
 │         API Layer (Views)           │
-│     - Recebe requisições HTTP       │
-│     - Valida dados (Serializers)    │
+│     - Receives HTTP requests        │
+│     - Validates data (Serializers)  │
 └──────────────┬──────────────────────┘
                │
 ┌──────────────┴──────────────────────┐
@@ -59,78 +59,78 @@ Este projeto segue uma arquitetura em camadas inspirada em DDD (Domain-Driven De
                │
 ┌──────────────┴──────────────────────┐
 │         Data Layer (Models)         │
-│     - Define estrutura de dados     │
-│     - Interage com banco de dados   │
+│     - Defines data structure        │
+│     - Interacts with database       │
 └─────────────────────────────────────┘
 ```
 
-### Padrão de Separação: Selectors vs Services
+### Separation Pattern: Selectors vs Services
 
-- **Selectors** (`selectors.py`): Funções de leitura (queries). Retornam QuerySets ou objetos do banco.
-- **Services** (`services.py`): Funções de escrita (commands). Encapsulam a lógica de negócio para criar/atualizar/deletar.
+- **Selectors** (`selectors.py`): Read functions (queries). Return QuerySets or database objects.
+- **Services** (`services.py`): Write functions (commands). Encapsulate business logic for create/update/delete.
 
-**Vantagens:**
-- Código mais testável e organizado
-- Lógica de negócio isolada das views
-- Fácil reutilização de código
-- Facilita refatoração futura
+**Advantages:**
+- More testable and organized code
+- Business logic isolated from views
+- Easy code reusability
+- Facilitates future refactoring
 
-## 📁 Estrutura de Diretórios
+## 📁 Directory Structure
 
 ```
 django-api/
-├── config/                      # Configurações do projeto Django
+├── config/                      # Django project configurations
 │   ├── settings/
-│   │   ├── base.py             # Configurações base compartilhadas
-│   │   ├── dev.py              # Configurações de desenvolvimento
-│   │   └── prod.py             # Configurações de produção
-│   ├── urls.py                 # URLs principais do projeto
-│   ├── wsgi.py                 # Configuração WSGI
-│   └── asgi.py                 # Configuração ASGI
+│   │   ├── base.py             # Shared base configurations
+│   │   ├── dev.py              # Development configurations
+│   │   └── prod.py             # Production configurations
+│   ├── urls.py                 # Main project URLs
+│   ├── wsgi.py                 # WSGI configuration
+│   └── asgi.py                 # ASGI configuration
 │
-├── core/                        # App central com código compartilhado
-│   ├── models.py               # TimeStampedModel (modelo base abstrato)
-│   └── pagination.py           # Classe de paginação customizada
+├── core/                        # Central app with shared code
+│   ├── models.py               # TimeStampedModel (abstract base model)
+│   └── pagination.py           # Custom pagination class
 │
-├── users/                       # App de usuários
-│   ├── models.py               # User model customizado
+├── users/                       # Users app
+│   ├── models.py               # Custom User model
 │   └── api/
-│       ├── views.py            # UserViewSet (ReadOnly para admins)
+│       ├── views.py            # UserViewSet (ReadOnly for admins)
 │       ├── serializers.py      # UserSerializer
-│       └── urls.py             # Rotas de usuários
+│       └── urls.py             # User routes
 │
-├── tasks/                       # App de tarefas
+├── tasks/                       # Tasks app
 │   ├── models.py               # Task model
-│   ├── selectors.py            # Funções de consulta (read)
-│   ├── services.py             # Funções de negócio (write)
+│   ├── selectors.py            # Query functions (read)
+│   ├── services.py             # Business functions (write)
 │   ├── api/
 │   │   ├── views.py            # TaskViewSet
 │   │   ├── serializers.py      # TaskSerializer
-│   │   └── urls.py             # Rotas de tarefas
+│   │   └── urls.py             # Task routes
 │   └── tests/
-│       └── test_tasks_api.py   # Testes da API de tarefas
+│       └── test_tasks_api.py   # Task API tests
 │
-├── manage.py                    # CLI do Django
-├── db.sqlite3                   # Banco de dados SQLite
-└── README.md                    # Este arquivo
+├── manage.py                    # Django CLI
+├── db.sqlite3                   # SQLite database
+└── README.md                    # This file
 ```
 
-## 🚀 Instalação e Configuração
+## 🚀 Installation and Setup
 
-### Pré-requisitos
+### Prerequisites
 
-- Python 3.8 ou superior
-- pip (gerenciador de pacotes Python)
-- virtualenv (recomendado)
+- Python 3.8 or higher
+- pip (Python package manager)
+- virtualenv (recommended)
 
-### Passo 1: Clone o Repositório
+### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/lucas54neves/django-api.git
 cd django-api
 ```
 
-### Passo 2: Crie e Ative o Ambiente Virtual
+### Step 2: Create and Activate Virtual Environment
 
 **Linux/macOS:**
 ```bash
@@ -144,83 +144,79 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-### Passo 3: Instale as Dependências
+### Step 3: Install Dependencies
 
+```bash
+pip install -r requirements.txt
+```
+
+**Or install packages manually:**
 ```bash
 pip install django djangorestframework django-debug-toolbar
 ```
 
-**Ou crie um `requirements.txt`:**
-```bash
-# Salve as dependências instaladas
-pip freeze > requirements.txt
+### Step 4: Configure Environment Variables (Optional)
 
-# Para instalar em outro ambiente
-pip install -r requirements.txt
-```
-
-### Passo 4: Configure as Variáveis de Ambiente (Opcional)
-
-Para produção, defina a variável `DJANGO_SECRET_KEY`:
+For production, set the `DJANGO_SECRET_KEY` variable:
 
 ```bash
-export DJANGO_SECRET_KEY='sua-chave-secreta-aqui'
+export DJANGO_SECRET_KEY='your-secret-key-here'
 ```
 
-### Passo 5: Execute as Migrações
+### Step 5: Run Migrations
 
 ```bash
 python manage.py migrate
 ```
 
-### Passo 6: Crie um Superusuário
+### Step 6: Create a Superuser
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Siga as instruções para criar username, email e senha.
+Follow the instructions to create username, email, and password.
 
-### Passo 7: Inicie o Servidor de Desenvolvimento
+### Step 7: Start the Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-A API estará disponível em: `http://127.0.0.1:8000/`
+The API will be available at: `http://127.0.0.1:8000/`
 
-## 🔍 Como o Projeto Funciona
+## 🔍 How the Project Works
 
-### 1. Configurações por Ambiente
+### 1. Environment-Based Configuration
 
-O projeto usa múltiplos arquivos de configuração:
+The project uses multiple configuration files:
 
-- **`base.py`**: Configurações comuns (apps instalados, middleware, banco de dados base)
-- **`dev.py`**: Herda de `base.py` e adiciona DEBUG=True, debug_toolbar
-- **`prod.py`**: Herda de `base.py` com DEBUG=False e configurações de produção
+- **`base.py`**: Common settings (installed apps, middleware, base database)
+- **`dev.py`**: Inherits from `base.py` and adds DEBUG=True, debug_toolbar
+- **`prod.py`**: Inherits from `base.py` with DEBUG=False and production settings
 
-O arquivo `manage.py` está configurado para usar `config.settings.dev` por padrão.
+The `manage.py` file is configured to use `config.settings.dev` by default.
 
-### 2. Modelo de Usuário Customizado
+### 2. Custom User Model
 
-O projeto usa um modelo de usuário customizado (`users.User`) que herda de `AbstractUser`:
+The project uses a custom user model (`users.User`) that inherits from `AbstractUser`:
 
 ```python
 # users/models.py
 class User(AbstractUser, TimeStampedModel):
-    pass  # Adicione campos extras conforme necessário
+    pass  # Add extra fields as needed
 ```
 
-Definido em `base.py`:
+Defined in `base.py`:
 ```python
 AUTH_USER_MODEL = 'users.User'
 ```
 
-**⚠️ Importante:** O usuário customizado deve ser definido antes de executar a primeira migração.
+**⚠️ Important:** The custom user must be defined before running the first migration.
 
-### 3. TimeStampedModel - Modelo Base Abstrato
+### 3. TimeStampedModel - Abstract Base Model
 
-Todos os models herdam de `TimeStampedModel` para ter campos de timestamp automáticos:
+All models inherit from `TimeStampedModel` to have automatic timestamp fields:
 
 ```python
 # core/models.py
@@ -232,7 +228,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 ```
 
-### 4. Modelo Task
+### 4. Task Model
 
 ```python
 # tasks/models.py
@@ -242,11 +238,11 @@ class Task(TimeStampedModel):
     done = models.BooleanField(default=False)
 ```
 
-Cada tarefa pertence a um usuário (owner) e possui título e status de conclusão.
+Each task belongs to a user (owner) and has a title and completion status.
 
-### 5. Arquitetura de Services e Selectors
+### 5. Services and Selectors Architecture
 
-**Selectors** (consultas):
+**Selectors** (queries):
 ```python
 # tasks/selectors.py
 def list_tasks_for_user(user):
@@ -256,7 +252,7 @@ def get_task_for_user(*, user, task_id: int):
     return Task.objects.filter(owner=user, id=task_id).first()
 ```
 
-**Services** (operações de escrita):
+**Services** (write operations):
 ```python
 # tasks/services.py
 def create_task(*, owner, title: str, done: bool = False) -> Task:
@@ -272,7 +268,7 @@ def delete_task(*, task: Task):
     task.delete()
 ```
 
-**ViewSet utilizando services e selectors:**
+**ViewSet using services and selectors:**
 ```python
 # tasks/api/views.py
 class TaskViewSet(viewsets.ModelViewSet):
@@ -288,9 +284,9 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer.instance = task
 ```
 
-### 6. Autenticação e Permissões
+### 6. Authentication and Permissions
 
-Configurado no `base.py`:
+Configured in `base.py`:
 
 ```python
 REST_FRAMEWORK = {
@@ -304,12 +300,12 @@ REST_FRAMEWORK = {
 }
 ```
 
-- Todas as rotas exigem autenticação por padrão
-- Suporta autenticação via Session (para navegador) e Token (para apps)
+- All routes require authentication by default
+- Supports authentication via Session (for browser) and Token (for apps)
 
-### 7. Roteamento de URLs
+### 7. URL Routing
 
-URLs principais (`config/urls.py`):
+Main URLs (`config/urls.py`):
 ```python
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -320,7 +316,7 @@ urlpatterns = [
 ]
 ```
 
-Rotas de tasks (`tasks/api/urls.py`):
+Task routes (`tasks/api/urls.py`):
 ```python
 router = DefaultRouter()
 router.register('tasks', TaskViewSet, basename='task')
@@ -334,22 +330,22 @@ urlpatterns = router.urls
 http://localhost:8000/api/v1/
 ```
 
-### Autenticação
+### Authentication
 
-Para acessar a API, você precisa estar autenticado. Use o Django Admin para fazer login:
+To access the API, you need to be authenticated. Use Django Admin to login:
 
-1. Acesse `http://localhost:8000/admin/`
-2. Faça login com o superusuário criado
-3. Use a Session Authentication ou configure Token Authentication
+1. Access `http://localhost:8000/admin/`
+2. Login with the created superuser
+3. Use Session Authentication or configure Token Authentication
 
-### Endpoints de Tarefas
+### Task Endpoints
 
-#### Listar todas as tarefas do usuário autenticado
+#### List all tasks for authenticated user
 ```http
 GET /api/v1/tasks/
 ```
 
-**Resposta:**
+**Response:**
 ```json
 {
   "count": 2,
@@ -358,7 +354,7 @@ GET /api/v1/tasks/
   "results": [
     {
       "id": 1,
-      "title": "Minha primeira tarefa",
+      "title": "My first task",
       "done": false,
       "created_at": "2025-11-27T10:30:00Z",
       "updated_at": "2025-11-27T10:30:00Z"
@@ -367,34 +363,34 @@ GET /api/v1/tasks/
 }
 ```
 
-#### Criar nova tarefa
+#### Create new task
 ```http
 POST /api/v1/tasks/
 Content-Type: application/json
 
 {
-  "title": "Nova tarefa",
+  "title": "New task",
   "done": false
 }
 ```
 
-#### Obter detalhes de uma tarefa
+#### Get task details
 ```http
 GET /api/v1/tasks/{id}/
 ```
 
-#### Atualizar tarefa
+#### Update task
 ```http
 PUT /api/v1/tasks/{id}/
 Content-Type: application/json
 
 {
-  "title": "Tarefa atualizada",
+  "title": "Updated task",
   "done": true
 }
 ```
 
-#### Atualização parcial
+#### Partial update
 ```http
 PATCH /api/v1/tasks/{id}/
 Content-Type: application/json
@@ -404,97 +400,97 @@ Content-Type: application/json
 }
 ```
 
-#### Deletar tarefa
+#### Delete task
 ```http
 DELETE /api/v1/tasks/{id}/
 ```
 
-### Endpoints de Usuários (Apenas Admin)
+### User Endpoints (Admin Only)
 
-#### Listar usuários
+#### List users
 ```http
 GET /api/v1/users/
 ```
 
-#### Detalhes de um usuário
+#### User details
 ```http
 GET /api/v1/users/{id}/
 ```
 
-**Nota:** Apenas usuários admin podem acessar os endpoints de usuários.
+**Note:** Only admin users can access user endpoints.
 
-### Paginação
+### Pagination
 
-A API usa paginação por padrão:
+The API uses pagination by default:
 
-- **Tamanho padrão da página:** 20 itens
-- **Tamanho máximo:** 100 itens
-- **Parâmetro personalizado:** `?page_size=50`
+- **Default page size:** 20 items
+- **Maximum size:** 100 items
+- **Custom parameter:** `?page_size=50`
 
-Exemplo:
+Example:
 ```http
 GET /api/v1/tasks/?page=2&page_size=10
 ```
 
-## 🧪 Testes
+## 🧪 Testing
 
-O projeto inclui testes automatizados para a API de tarefas.
+The project includes automated tests for the task API.
 
-### Executar todos os testes
+### Run all tests
 
 ```bash
 python manage.py test
 ```
 
-### Executar testes de um app específico
+### Run tests for a specific app
 
 ```bash
 python manage.py test tasks
 ```
 
-### Executar com verbosidade
+### Run with verbosity
 
 ```bash
 python manage.py test --verbosity=2
 ```
 
-### Estrutura dos Testes
+### Test Structure
 
-Os testes estão em `tasks/tests/test_tasks_api.py` e cobrem:
+Tests are in `tasks/tests/test_tasks_api.py` and cover:
 
-- Criação de tarefas
-- Listagem de tarefas
-- Atualização de tarefas
-- Deleção de tarefas
-- Permissões e isolamento entre usuários
+- Task creation
+- Task listing
+- Task updates
+- Task deletion
+- Permissions and isolation between users
 
-## 🚀 Deploy
+## 🚀 Deployment
 
-### Preparação para Produção
+### Production Preparation
 
-1. **Altere o ambiente para produção:**
+1. **Change environment to production:**
 
-   Edite o `wsgi.py` ou defina a variável de ambiente:
+   Edit `wsgi.py` or set the environment variable:
    ```python
    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.prod')
    ```
 
-2. **Configure a SECRET_KEY:**
+2. **Configure SECRET_KEY:**
 
    ```bash
-   export DJANGO_SECRET_KEY='chave-secreta-super-segura'
+   export DJANGO_SECRET_KEY='super-secure-secret-key'
    ```
 
-3. **Configure o banco de dados (PostgreSQL recomendado):**
+3. **Configure database (PostgreSQL recommended):**
 
-   Em `config/settings/prod.py`:
+   In `config/settings/prod.py`:
    ```python
    DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.postgresql',
-           'NAME': 'seu_banco',
-           'USER': 'seu_usuario',
-           'PASSWORD': 'sua_senha',
+           'NAME': 'your_database',
+           'USER': 'your_user',
+           'PASSWORD': 'your_password',
            'HOST': 'localhost',
            'PORT': '5432',
        }
@@ -504,32 +500,32 @@ Os testes estão em `tasks/tests/test_tasks_api.py` e cobrem:
 4. **Configure ALLOWED_HOSTS:**
 
    ```python
-   ALLOWED_HOSTS = ['seu-dominio.com', 'www.seu-dominio.com']
+   ALLOWED_HOSTS = ['your-domain.com', 'www.your-domain.com']
    ```
 
-5. **Colete arquivos estáticos:**
+5. **Collect static files:**
 
    ```bash
    python manage.py collectstatic --noinput
    ```
 
-6. **Execute migrações:**
+6. **Run migrations:**
 
    ```bash
    python manage.py migrate
    ```
 
-### Opções de Deploy
+### Deployment Options
 
-- **Heroku**: Plataforma fácil para deploy de aplicações Django
-- **AWS EC2**: Máquinas virtuais configuráveis
-- **DigitalOcean**: Droplets com configuração simplificada
-- **Railway**: Deploy moderno e simplificado
-- **Render**: Alternativa moderna ao Heroku
+- **Heroku**: Easy platform for Django application deployment
+- **AWS EC2**: Configurable virtual machines
+- **DigitalOcean**: Droplets with simplified configuration
+- **Railway**: Modern and simplified deployment
+- **Render**: Modern alternative to Heroku
 
-### Servidor WSGI/ASGI
+### WSGI/ASGI Server
 
-Para produção, use servidores como:
+For production, use servers like:
 
 - **Gunicorn** (WSGI)
   ```bash
@@ -543,14 +539,14 @@ Para produção, use servidores como:
   uvicorn config.asgi:application --host 0.0.0.0 --port 8000
   ```
 
-### Nginx como Reverse Proxy
+### Nginx as Reverse Proxy
 
-Configure o Nginx para servir a aplicação:
+Configure Nginx to serve the application:
 
 ```nginx
 server {
     listen 80;
-    server_name seu-dominio.com;
+    server_name your-domain.com;
 
     location / {
         proxy_pass http://127.0.0.1:8000;
@@ -559,39 +555,39 @@ server {
     }
 
     location /static/ {
-        alias /caminho/para/staticfiles/;
+        alias /path/to/staticfiles/;
     }
 }
 ```
 
-## 📝 Boas Práticas Implementadas
+## 📝 Implemented Best Practices
 
-✅ Separação de configurações por ambiente  
-✅ Modelo de usuário customizado  
-✅ Arquitetura em camadas (Services/Selectors)  
-✅ Uso de keyword-only arguments (`*`) nas funções  
-✅ Paginação configurável  
-✅ Autenticação obrigatória  
-✅ Timestamps automáticos  
-✅ Testes automatizados  
-✅ Isolamento de dados por usuário  
+✅ Separation of configurations by environment  
+✅ Custom user model  
+✅ Layered architecture (Services/Selectors)  
+✅ Use of keyword-only arguments (`*`) in functions  
+✅ Configurable pagination  
+✅ Required authentication  
+✅ Automatic timestamps  
+✅ Automated tests  
+✅ Data isolation per user  
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/MyFeature`)
+3. Commit your changes (`git commit -m 'Add MyFeature'`)
+4. Push to the branch (`git push origin feature/MyFeature`)
+5. Open a Pull Request
 
-## 📄 Licença
+## 📄 License
 
-Este projeto é de código aberto e está disponível sob a licença MIT.
+This project is open source and available under the MIT License.
 
-## 📧 Contato
+## 📧 Contact
 
 Lucas Neves - [@lucas54neves](https://github.com/lucas54neves)
 
 ---
 
-**Desenvolvido com ❤️ usando Django e Django REST Framework**
+**Developed with ❤️ using Django and Django REST Framework**
