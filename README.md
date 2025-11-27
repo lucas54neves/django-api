@@ -117,8 +117,34 @@ django-api/
 
 ## 🚀 Installation and Setup
 
-### Prerequisites
+### Option 1: Using Dev Container (Recommended) 🐳
 
+The easiest way to get started is using the Dev Container, which provides a pre-configured development environment with all dependencies.
+
+**Prerequisites:**
+- Docker Desktop installed and running
+- VS Code or Cursor with the "Dev Containers" extension
+
+**Steps:**
+1. Open the project in VS Code/Cursor
+2. Press `F1` or `Ctrl+Shift+P` (Windows/Linux) / `Cmd+Shift+P` (Mac)
+3. Type: `Dev Containers: Reopen in Container`
+4. Wait for the container to build and initialize
+
+The container will automatically:
+- Install all Python dependencies
+- Run database migrations
+- Start the development server on port 8000
+
+Access the API at: `http://localhost:8000/`
+
+For more details, see [.devcontainer/README.md](.devcontainer/README.md)
+
+---
+
+### Option 2: Manual Installation
+
+**Prerequisites:**
 - Python 3.8 or higher
 - pip (Python package manager)
 - virtualenv (recommended)

@@ -1,0 +1,71 @@
+{
+  "name": "Django API Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  // Configurações do VS Code/Cursor
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+        "python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.tabSize": 4
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.pylint",
+        "batisteo.vscode-django",
+        "wholroyd.jinja",
+        "ms-python.debugpy",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "GitHub.copilot"
+      ]
+    }
+  },
+
+  // Portas para expor
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Django Dev Server",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // Comandos pós-criação do container
+  "postCreateCommand": "pip install -r requirements.txt && python manage.py migrate",
+
+  // Comandos pós-inicialização
+  "postStartCommand": "python manage.py runserver 0.0.0.0:8000",
+
+  // Variáveis de ambiente
+  "remoteEnv": {
+    "DJANGO_SETTINGS_MODULE": "config.settings.dev",
+    "PYTHONUNBUFFERED": "1"
+  },
+
+  // Features adicionais
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Usuário remoto
+  "remoteUser": "vscode"
+}
+
