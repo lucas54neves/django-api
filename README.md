@@ -12,6 +12,7 @@ A robust RESTful API built with Django and Django REST Framework, following best
 - [How the Project Works](#how-the-project-works)
 - [API Endpoints](#api-endpoints)
 - [Testing](#testing)
+- [CI/CD - Continuous Integration](#cicd---continuous-integration)
 - [Deployment](#deployment)
 
 ## ✨ Features
@@ -462,22 +463,82 @@ GET /api/v1/tasks/?page=2&page_size=10
 
 The project includes automated tests for the task API.
 
-### Run all tests
+### Quick Start with Makefile
 
+The project includes a Makefile with convenient commands for development:
+
+```bash
+# Install development dependencies
+make install-dev
+
+# Run all tests
+make test
+
+# Run tests with coverage report
+make test-coverage
+
+# Run all linting checks
+make lint
+
+# Auto-format code (black + isort)
+make format
+
+# Run lint and tests (same as CI)
+make check
+
+# Clean temporary files
+make clean
+
+# Show all available commands
+make help
+```
+
+### Run Tests Manually
+
+**Run all tests:**
 ```bash
 python manage.py test
 ```
 
-### Run tests for a specific app
-
+**Run tests for a specific app:**
 ```bash
 python manage.py test tasks
 ```
 
-### Run with verbosity
-
+**Run with verbosity:**
 ```bash
 python manage.py test --verbosity=2
+```
+
+**Run with coverage:**
+```bash
+coverage run --source='.' manage.py test
+coverage report
+coverage html  # Generate HTML report in htmlcov/
+```
+
+### Code Quality and Linting
+
+The project uses multiple tools to ensure code quality:
+
+**Black** (code formatting):
+```bash
+black .
+```
+
+**isort** (import organization):
+```bash
+isort .
+```
+
+**Flake8** (style guide enforcement):
+```bash
+flake8 .
+```
+
+**Pylint** (code analysis):
+```bash
+pylint --disable=all --enable=E,F --ignore=migrations,venv **/*.py
 ```
 
 ### Test Structure
@@ -489,6 +550,64 @@ Tests are in `tasks/tests/test_tasks_api.py` and cover:
 - Task updates
 - Task deletion
 - Permissions and isolation between users
+
+## 🔄 CI/CD - Continuous Integration
+
+The project includes a GitHub Actions workflow that automatically runs on every push or pull request to the `main` branch.
+
+### What the CI Pipeline Does
+
+The workflow (`.github/workflows/ci.yml`) automatically:
+
+1. **✅ Code Formatting Check** - Validates code formatting with Black
+2. **✅ Import Organization** - Checks import sorting with isort
+3. **✅ Code Linting** - Runs Flake8 and Pylint to catch errors and style issues
+4. **✅ All Tests** - Executes the complete test suite
+5. **✅ Coverage Report** - Generates test coverage reports
+6. **✅ Multi-Python Version** - Tests on Python 3.11 and 3.12
+
+### Workflow Triggers
+
+The CI runs automatically on:
+- Push to `main` branch
+- Pull requests targeting `main` branch
+
+### Viewing CI Results
+
+1. Go to your GitHub repository
+2. Click on "Actions" tab
+3. Select a workflow run to see detailed results
+4. Download coverage reports from artifacts (available for 30 days)
+
+### Running CI Checks Locally
+
+Before pushing code, you can run the same checks locally:
+
+```bash
+# Run everything (lint + tests)
+make check
+
+# Or run individually
+make lint      # All linting checks
+make test      # All tests
+make format    # Auto-fix formatting issues
+```
+
+### Development Dependencies
+
+To install all linting and testing tools locally:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+This includes:
+- **black** - Code formatter
+- **isort** - Import sorter
+- **flake8** - Style guide enforcer
+- **pylint** - Code analyzer
+- **pytest** & **pytest-django** - Testing framework
+- **coverage** - Code coverage tool
 
 ## 🚀 Deployment
 

@@ -1,0 +1,30 @@
+[flake8]
+max-line-length = 127
+exclude = 
+    venv,
+    .venv,
+    env,
+    .env,
+    migrations,
+    __pycache__,
+    .git,
+    .github,
+    htmlcov,
+    .pytest_cache,
+    *.egg-info,
+    db.sqlite3
+
+# Ignore some common errors in Django projects
+ignore = 
+    E203,  # whitespace before ':'
+    W503,  # line break before binary operator
+    E501,  # line too long (handled by black)
+
+max-complexity = 10
+
+# Per-file ignores
+per-file-ignores =
+    __init__.py: F401
+    */migrations/*: E501,F401
+    */settings/*.py: E501
+
