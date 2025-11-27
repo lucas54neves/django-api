@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -9,23 +7,19 @@ services:
     volumes:
       - ..:/workspace:cached
     
-    # Sobrescreve o comando padrão para manter o container rodando
     command: sleep infinity
     
-    # Portas expostas
+    # Expose Django development server port
     ports:
       - "8000:8000"
     
-    # Variáveis de ambiente
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.dev
       - PYTHONUNBUFFERED=1
     
-    # Rede
-    networks:
-      - django-network
-
-networks:
-  django-network:
-    driver: bridge
-
+    # Enable SSH agent forwarding
+    env_file:
+      - .env
+    
+    # Use host network for easier development
+    network_mode: bridge

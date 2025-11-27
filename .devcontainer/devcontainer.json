@@ -1,44 +1,59 @@
 {
-  "name": "Django API Dev Container",
+  "name": "Django REST API Development",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
 
-  // Configurações do VS Code/Cursor
+  // Configure tool-specific properties
   "customizations": {
     "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "charliermarsh.ruff",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "mhutchie.git-graph"
+      ],
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": true,
         "python.formatting.provider": "black",
-        "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
-        "python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+        "python.linting.flake8Enabled": true,
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit"
         },
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
-          "editor.tabSize": 4
-        }
-      },
-      "extensions": [
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-python.black-formatter",
-        "ms-python.pylint",
-        "batisteo.vscode-django",
-        "wholroyd.jinja",
-        "ms-python.debugpy",
-        "ms-azuretools.vscode-docker",
-        "eamodio.gitlens",
-        "GitHub.copilot"
-      ]
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
+        },
+        "isort.args": ["--profile", "black"],
+        "black-formatter.args": ["--line-length=100"],
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
     }
   },
 
-  // Portas para expor
+  // Features to add to the dev container
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+
+  // Forward ports
   "forwardPorts": [8000],
   "portsAttributes": {
     "8000": {
@@ -47,25 +62,25 @@
     }
   },
 
-  // Comandos pós-criação do container
-  "postCreateCommand": "pip install -r requirements.txt && python manage.py migrate",
+  // Use 'postCreateCommand' to run commands after the container is created
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  
+  // Use 'postStartCommand' to run commands every time the container starts
+  "postStartCommand": "bash .devcontainer/post-start.sh",
 
-  // Comandos pós-inicialização
-  "postStartCommand": "python manage.py runserver 0.0.0.0:8000",
+  // Mount SSH keys from host (read-only)
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly"
+  ],
 
-  // Variáveis de ambiente
+  // Set environment variables
   "remoteEnv": {
-    "DJANGO_SETTINGS_MODULE": "config.settings.dev",
-    "PYTHONUNBUFFERED": "1"
+    "DJANGO_SETTINGS_MODULE": "config.settings.dev"
   },
 
-  // Features adicionais
-  "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
+  // Run as non-root user
+  "remoteUser": "vscode",
 
-  // Usuário remoto
-  "remoteUser": "vscode"
+  // Keep container running
+  "overrideCommand": false
 }
-

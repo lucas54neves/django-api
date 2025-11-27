@@ -135,11 +135,25 @@ The easiest way to get started is using the Dev Container, which provides a pre-
 The container will automatically:
 - Install all Python dependencies
 - Run database migrations
-- Start the development server on port 8000
+- Set up Git hooks for code quality
+- **Mount your SSH keys from host** (for Git operations)
+- **Configure SSH agent forwarding**
 
 Access the API at: `http://localhost:8000/`
 
-For more details, see [.devcontainer/README.md](.devcontainer/README.md)
+**🔑 SSH Configuration:**
+
+The dev container automatically mounts your SSH configuration from the host machine, allowing you to:
+- Push/pull from private Git repositories
+- Use SSH authentication for GitHub, GitLab, Bitbucket, etc.
+- Keep your existing SSH keys secure on the host (read-only mount)
+
+Test SSH inside the container:
+```bash
+ssh -T git@github.com
+```
+
+For more details and troubleshooting, see [.devcontainer/README.md](.devcontainer/README.md)
 
 ---
 

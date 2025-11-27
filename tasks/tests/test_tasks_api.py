@@ -1,12 +1,12 @@
 # tasks/tests/test_tasks_api.py
 
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase, APIClient
+from django.urls import reverse
+
 from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
 
 from tasks.models import Task
-
 
 User = get_user_model()
 
@@ -58,7 +58,7 @@ class TaskAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # only 2 tasks should be returned (task1 and task2)
         # API uses pagination, so response.data has 'results'
-        results = response.data.get('results', response.data)
+        results = response.data.get("results", response.data)
         self.assertEqual(len(results), 2)
         returned_titles = {item["title"] for item in results}
         self.assertIn("Task 1", returned_titles)
@@ -293,7 +293,7 @@ class TaskAPITestCase(APITestCase):
             "owner": self.other_user.id,  # trying to change owner
         }
 
-        response = self.client.patch(url, payload, format="json")
+        _ = self.client.patch(url, payload, format="json")
         self.task1.refresh_from_db()
 
         # owner should remain unchanged
@@ -326,7 +326,7 @@ class TaskAPITestCase(APITestCase):
         )
 
         response = self.client.get(self.list_url)
-        results = response.data.get('results', response.data)
+        results = response.data.get("results", response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # The newest task should be first
@@ -428,7 +428,7 @@ class TaskAPITestCase(APITestCase):
         self.client.force_authenticate(user=new_user)
 
         response = self.client.get(self.list_url)
-        results = response.data.get('results', response.data)
+        results = response.data.get("results", response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(results), 0)

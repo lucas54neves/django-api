@@ -1,7 +1,9 @@
-from rest_framework import viewsets, permissions
-from .serializers import TaskSerializer
+from rest_framework import permissions, viewsets
+
 from .. import selectors, services
 from ..models import Task
+from .serializers import TaskSerializer
+
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
@@ -14,8 +16,8 @@ class TaskViewSet(viewsets.ModelViewSet):
         # usa o service para encapsular regra
         task = services.create_task(
             owner=self.request.user,
-            title=serializer.validated_data['title'],
-            done=serializer.validated_data.get('done', False),
+            title=serializer.validated_data["title"],
+            done=serializer.validated_data.get("done", False),
         )
         serializer.instance = task
 

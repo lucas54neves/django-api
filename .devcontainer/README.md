@@ -1,124 +1,304 @@
-# Dev Container - Django API
+# Dev Container Configuration
 
-Este projeto está configurado para usar Dev Containers, permitindo um ambiente de desenvolvimento consistente e isolado.
+This directory contains the configuration for developing this Django project inside a Docker container using VS Code or Cursor's Dev Containers feature.
 
-## 📋 Pré-requisitos
+## 🎯 What's Included
 
-- **Docker Desktop** instalado e rodando
-- **Visual Studio Code** ou **Cursor** com a extensão "Dev Containers" instalada
-  - Extensão: `ms-vscode-remote.remote-containers`
+### Container Features
 
-## 🚀 Como usar
+- **Python 3.12** with all project dependencies pre-installed
+- **Git** and **GitHub CLI** for version control
+- **SQLite** database ready to use
+- **Django development server** configured
+- **VS Code extensions** for Python development:
+  - Python, Pylance (IntelliSense)
+  - Black (code formatter)
+  - isort (import sorter)
+  - Ruff (fast linter)
+  - Docker extension
+  - GitLens and Git Graph
 
-### Opção 1: Abrir no Dev Container (Recomendado)
+### Automatic Setup
 
-1. Abra o projeto no VS Code/Cursor
-2. Pressione `F1` ou `Ctrl+Shift+P` (Windows/Linux) / `Cmd+Shift+P` (Mac)
-3. Digite: `Dev Containers: Reopen in Container`
-4. Aguarde o container ser construído e inicializado
+When the container starts, it automatically:
 
-### Opção 2: Usar Command Palette
+1. ✅ Installs all Python dependencies
+2. ✅ Runs database migrations
+3. ✅ Creates a default superuser (`admin` / `admin`)
+4. ✅ Sets up Git hooks for code quality
+5. ✅ Configures SSH keys from your host machine
 
-1. Com o projeto aberto, clique no ícone verde no canto inferior esquerdo
-2. Selecione `Reopen in Container`
+## 🚀 Getting Started
 
-### Opção 3: Prompt Automático
+### Prerequisites
 
-- Se você tiver a pasta `.devcontainer` no projeto, o VS Code/Cursor pode sugerir automaticamente abrir no container
+- **Docker Desktop** installed and running
+- **VS Code** or **Cursor** with "Dev Containers" extension
 
-## 🔧 O que acontece automaticamente
+### How to Open
 
-Quando o container é criado pela primeira vez:
+1. Open the project folder in VS Code/Cursor
+2. Press `F1` or `Ctrl+Shift+P` (Windows/Linux) / `Cmd+Shift+P` (Mac)
+3. Type and select: **"Dev Containers: Reopen in Container"**
+4. Wait for the container to build (first time takes ~5-10 minutes)
 
-1. ✅ Instala todas as dependências do `requirements.txt`
-2. ✅ Executa as migrações do Django (`python manage.py migrate`)
-3. ✅ Inicia o servidor de desenvolvimento na porta 8000
+### Access the Application
 
-## 🌐 Acessando a aplicação
+Once the container is running:
 
-Após o container iniciar, acesse:
-- **URL**: http://localhost:8000
-- **Admin**: http://localhost:8000/admin (se configurado)
+- **Django Dev Server**: http://localhost:8000
+- **Django Admin**: http://localhost:8000/admin
+  - Username: `admin`
+  - Password: `admin`
+- **API Endpoints**: http://localhost:8000/api/v1/
 
-## 🛠️ Extensões incluídas
+### Start the Development Server
 
-O Dev Container vem com extensões pré-instaladas:
-
-- **Python** - Suporte completo para Python
-- **Pylance** - IntelliSense avançado
-- **Black Formatter** - Formatação automática de código
-- **Pylint** - Linting de código Python
-- **Django** - Suporte para templates e sintaxe Django
-- **Jinja** - Suporte para templates Jinja2
-- **Docker** - Gerenciamento de containers
-- **GitLens** - Recursos avançados de Git
-
-## ⚙️ Configurações personalizadas
-
-### Formatação automática
-
-O código será formatado automaticamente ao salvar usando Black.
-
-### Linting
-
-O Pylint está ativado para análise de código em tempo real.
-
-## 🔄 Reconstruir o container
-
-Se você fizer alterações no Dockerfile ou devcontainer.json:
-
-1. Pressione `F1` ou `Ctrl+Shift+P`
-2. Digite: `Dev Containers: Rebuild Container`
-
-## 📝 Comandos úteis
-
-Dentro do container, você pode executar:
+Open a terminal in VS Code/Cursor and run:
 
 ```bash
-# Criar migrações
-python manage.py makemigrations
-
-# Aplicar migrações
-python manage.py migrate
-
-# Criar superusuário
-python manage.py createsuperuser
-
-# Executar testes
-python manage.py test
-
-# Abrir shell do Django
-python manage.py shell
-
-# Coletar arquivos estáticos
-python manage.py collectstatic
+python manage.py runserver 0.0.0.0:8000
 ```
 
-## 🐛 Troubleshooting
+## 📂 File Structure
 
-### O container não inicia
+```
+.devcontainer/
+├── devcontainer.json       # Main configuration
+├── Dockerfile              # Container image definition
+├── docker-compose.yml      # Docker Compose configuration
+├── postCreateCommand.sh    # Setup script (runs after container creation)
+├── .env                    # Environment variables
+└── README.md              # This file
+```
 
-1. Certifique-se de que o Docker Desktop está rodando
-2. Tente reconstruir o container: `Dev Containers: Rebuild Container`
-3. Verifique os logs do Docker para erros
+## 🔧 Configuration Details
 
-### Porta 8000 já está em uso
+### Python Environment
 
-1. Pare qualquer servidor Django rodando fora do container
-2. Ou altere a porta em `.devcontainer/devcontainer.json` e `docker-compose.yml`
+- **Interpreter**: `/usr/local/bin/python`
+- **Virtual environment**: Not needed (isolated container)
+- **Dependencies**: Installed from `requirements.txt` and `requirements-dev.txt`
 
-### Dependências não instalam
+### VS Code Settings
 
-1. Verifique se o `requirements.txt` está correto
-2. Reconstrua o container do zero
-3. Execute manualmente: `pip install -r requirements.txt`
+The container automatically configures:
 
-## 🔒 Segurança
+- **Black** as the default Python formatter
+- **isort** for import organization
+- **Format on save** enabled
+- **Pylint** and **Flake8** for linting
+- **Pytest** for running tests
 
-O container roda com um usuário não-root (`vscode`) para maior segurança.
+### SSH Configuration
 
-## 📚 Recursos adicionais
+Your SSH keys from `~/.ssh` on the host machine are automatically mounted into the container (read-only). This allows you to:
 
-- [Documentação oficial dos Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers)
-- [Documentação do Django](https://docs.djangoproject.com/)
+- Push/pull from private Git repositories
+- Use SSH authentication with GitHub, GitLab, etc.
+- Keep your keys secure on the host
 
+Test SSH inside the container:
+
+```bash
+ssh -T git@github.com
+```
+
+## 🛠️ Development Workflow
+
+### Running Commands
+
+All commands run inside the container. Open a terminal in VS Code/Cursor:
+
+```bash
+# Database operations
+python manage.py migrate
+python manage.py makemigrations
+python manage.py createsuperuser
+
+# Run tests
+make test
+make test-coverage
+
+# Code quality
+make lint
+make format
+
+# Django shell
+python manage.py shell
+
+# Start dev server
+python manage.py runserver 0.0.0.0:8000
+```
+
+### Making Changes
+
+1. Edit code normally in VS Code/Cursor
+2. Changes are synced immediately (volume mount)
+3. Django dev server auto-reloads on file changes
+4. Linting and formatting happen automatically on save
+
+### Debugging
+
+The Python extension is configured for debugging:
+
+1. Set breakpoints in your code
+2. Press `F5` or use "Run and Debug" panel
+3. Select "Python: Django" configuration
+
+## 🔍 Troubleshooting
+
+### Container Won't Start
+
+**Check Docker Desktop is running:**
+
+```bash
+docker ps
+```
+
+**Rebuild the container:**
+
+1. Press `F1` → "Dev Containers: Rebuild Container"
+2. Or run: `docker-compose -f .devcontainer/docker-compose.yml build --no-cache`
+
+### Port 8000 Already in Use
+
+Stop any processes using port 8000:
+
+```bash
+# Find process
+lsof -i :8000
+
+# Kill process (replace PID)
+kill -9 <PID>
+```
+
+Or change the port in `docker-compose.yml`:
+
+```yaml
+ports:
+  - "8001:8000"  # Use 8001 on host instead
+```
+
+### SSH Keys Not Working
+
+**Verify SSH mount:**
+
+```bash
+# Inside container
+ls -la ~/.ssh
+```
+
+**Check permissions:**
+
+```bash
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_rsa  # or id_ed25519
+```
+
+**Test SSH connection:**
+
+```bash
+ssh -vT git@github.com
+```
+
+### Python Dependencies Not Found
+
+**Reinstall dependencies:**
+
+```bash
+pip install --user -r requirements.txt
+pip install --user -r requirements-dev.txt
+```
+
+### Database Issues
+
+**Reset database:**
+
+```bash
+# Inside container
+rm db.sqlite3
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+## 🔄 Updating the Container
+
+### After Changing Dependencies
+
+If you modify `requirements.txt` or `requirements-dev.txt`:
+
+1. Rebuild the container: `F1` → "Dev Containers: Rebuild Container"
+2. Or manually: `pip install --user -r requirements.txt`
+
+### After Changing Docker Files
+
+If you modify `Dockerfile` or `docker-compose.yml`:
+
+1. Rebuild from scratch: `F1` → "Dev Containers: Rebuild Container Without Cache"
+
+## 📦 What Gets Installed
+
+### Python Packages (Production)
+
+From `requirements.txt`:
+- Django 5.2
+- djangorestframework
+- django-debug-toolbar
+
+### Python Packages (Development)
+
+From `requirements-dev.txt`:
+- black (code formatter)
+- isort (import sorter)
+- flake8 (linter)
+- pylint (code analyzer)
+- pytest & pytest-django (testing)
+- coverage (code coverage)
+
+### System Packages
+
+- git
+- curl
+- build-essential
+- libpq-dev (PostgreSQL client)
+- sqlite3
+- openssh-client
+
+## 🌟 Best Practices
+
+### Do's ✅
+
+- Commit your work frequently
+- Run `make lint` before committing
+- Use `make format` to auto-format code
+- Run `make test` to ensure tests pass
+- Keep dependencies up to date
+
+### Don'ts ❌
+
+- Don't install packages globally (use `--user` flag)
+- Don't commit `db.sqlite3` (it's gitignored)
+- Don't modify files outside the workspace
+- Don't run as root user
+
+## 🆘 Getting Help
+
+If you encounter issues:
+
+1. Check this README for troubleshooting steps
+2. Check Docker logs: `docker logs <container-id>`
+3. Check VS Code output: "Dev Containers" panel
+4. Rebuild container without cache
+5. Open an issue on the project repository
+
+## 📚 Additional Resources
+
+- [VS Code Dev Containers Documentation](https://code.visualstudio.com/docs/devcontainers/containers)
+- [Django Documentation](https://docs.djangoproject.com/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [Docker Documentation](https://docs.docker.com/)
+
+---
+
+**Happy Coding! 🚀**
